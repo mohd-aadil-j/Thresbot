@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Trading Dashboard Design System - Modern Fintech with Glassmorphism
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Dark Theme Base */
+    --background: 222 47% 4%;
+    --background-secondary: 225 25% 8%;
+    --foreground: 210 40% 98%;
+
+    /* Glassmorphism Cards */
+    --card: 225 25% 8%;
+    --card-secondary: 225 20% 12%;
+    --card-foreground: 210 40% 98%;
+    --card-glass: 225 25% 15%;
+
+    /* Popover */
+    --popover: 225 25% 8%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Trading Theme Colors */
+    --primary: 195 100% 50%; /* Neon Cyan */
+    --primary-foreground: 222 47% 4%;
+    --primary-glow: 195 100% 50%;
+
+    --secondary: 258 90% 66%; /* Electric Purple */
+    --secondary-foreground: 210 40% 98%;
+    --secondary-glow: 258 90% 66%;
+
+    /* Success/Danger for Trading */
+    --success: 142 76% 36%;
+    --success-foreground: 210 40% 98%;
+    --danger: 0 72% 51%;
+    --danger-foreground: 210 40% 98%;
+
+    /* Muted Elements */
+    --muted: 225 20% 12%;
+    --muted-foreground: 215 20% 65%;
+
+    /* Accent */
+    --accent: 225 20% 15%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* Interactive Elements */
+    --border: 225 20% 20%;
+    --input: 225 20% 15%;
+    --ring: 195 100% 50%;
+
+    /* Design System Values */
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(195 100% 50%), hsl(258 90% 66%));
+    --gradient-card: linear-gradient(135deg, hsl(225 25% 8% / 0.8), hsl(225 20% 12% / 0.6));
+    --gradient-glass: linear-gradient(135deg, hsl(225 25% 15% / 0.1), hsl(225 20% 20% / 0.05));
+    --gradient-bg: linear-gradient(135deg, hsl(222 47% 4%), hsl(225 25% 8%));
+
+    /* Shadows & Glows */
+    --shadow-glow: 0 0 40px hsl(195 100% 50% / 0.3);
+    --shadow-glow-secondary: 0 0 40px hsl(258 90% 66% / 0.2);
+    --shadow-glass: 0 8px 32px hsl(0 0% 0% / 0.3);
+    --shadow-card: 0 4px 20px hsl(0 0% 0% / 0.2);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-glow: box-shadow 0.3s ease, transform 0.2s ease;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background: var(--gradient-bg);
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  /* Glassmorphism Card */
+  .glass-card {
+    @apply backdrop-blur-md border border-white/10;
+    background: var(--gradient-glass);
+    box-shadow: var(--shadow-glass);
+  }
+
+  /* Trading Card */
+  .trading-card {
+    @apply backdrop-blur-md border border-white/10 rounded-xl p-6;
+    background: var(--gradient-card);
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-smooth);
+  }
+
+  .trading-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Neon Glow Button */
+  .btn-neon {
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300;
+    background: var(--gradient-primary);
+    box-shadow: 0 0 20px hsl(195 100% 50% / 0.4);
+  }
+
+  .btn-neon:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Floating Input */
+  .floating-input {
+    @apply w-full px-4 py-3 bg-transparent border rounded-lg outline-none transition-all duration-300;
+    border-color: hsl(225 20% 20%);
+    background: hsl(225 20% 15% / 0.5);
+    backdrop-filter: blur(10px);
+  }
+
+  .floating-input:focus {
+    border-color: hsl(195 100% 50%);
+    box-shadow: 0 0 0 2px hsl(195 100% 50% / 0.1);
+  }
+}

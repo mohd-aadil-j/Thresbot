@@ -1,0 +1,211 @@
+{
+  "name": "Trading Bot Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "unit": "minutes",
+              "value": 1
+            }
+          ]
+        }
+      },
+      "id": "cron_sell",
+      "name": "Cron - Sell Monitor",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "unit": "hours",
+              "value": 12
+            }
+          ]
+        }
+      },
+      "id": "cron_buy",
+      "name": "Cron - Buy Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://localhost:3000/auth/login",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "{\"email\": \"aadil110@gmail.com\", \"password\": \"123A@12c\"}"
+      },
+      "id": "login",
+      "name": "Login API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "requestMethod": "GET",
+        "url": "https://localhost:3000/trades",
+        "options": {},
+        "sendHeaders": true,
+        "headerParametersJson": "{\"Authorization\": \"={{\\\"Bearer \\\" + $json[\\\"token\\\"]}}\"}"
+      },
+      "id": "get_trades",
+      "name": "Get Trades",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$json[\"currentPrice\"]}}",
+              "operation": "largerEqual",
+              "value2": "={{$json[\"targetPrice\"]}}"
+            },
+            {
+              "value1": "={{$json[\"currentPrice\"]}}",
+              "operation": "smallerEqual",
+              "value2": "={{$json[\"stopLoss\"]}}"
+            }
+          ]
+        }
+      },
+      "id": "if_sell",
+      "name": "IF Sell Condition",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://localhost:3000/trade/sell",
+        "jsonParameters": true,
+        "bodyParametersJson": "{\"stockId\": \"={{$json[\\\"stockId\\\"]}}\", \"quantity\": \"={{$json[\\\"quantity\\\"]}}\"}",
+        "sendHeaders": true,
+        "headerParametersJson": "{\"Authorization\": \"={{\\\"Bearer \\\" + $json[\\\"token\\\"]}}\"}"
+      },
+      "id": "sell_trade",
+      "name": "Sell Trade",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://localhost:3000/trade",
+        "jsonParameters": true,
+        "bodyParametersJson": "{\"stockId\": \"={{$json[\\\"preferredStockId\\\"]}}\", \"quantity\": 1, \"targetProfit\": 25, \"stopLoss\": 10}",
+        "sendHeaders": true,
+        "headerParametersJson": "{\"Authorization\": \"={{\\\"Bearer \\\" + $json[\\\"token\\\"]}}\"}"
+      },
+      "id": "buy_trade",
+      "name": "Buy Trade",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "fromEmail": "mohamadaadilj@gmail.com",
+        "toEmail": "={{$json[\"userEmail\"]}}",
+        "subject": "={{$json[\"action\"]}} Alert - Trading Bot",
+        "text": "Stock {{$json[\"stockId\"]}} has been {{$json[\"action\"]}} at price {{$json[\"currentPrice\"]}}."
+      },
+      "id": "send_email",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1
+    }
+  ],
+  "connections": {
+    "cron_sell": {
+      "main": [
+        [
+          {
+            "node": "Login API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cron_buy": {
+      "main": [
+        [
+          {
+            "node": "Login API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "login": {
+      "main": [
+        [
+          {
+            "node": "Get Trades",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_trades": {
+      "main": [
+        [
+          {
+            "node": "IF Sell Condition",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if_sell": {
+      "main": [
+        [
+          {
+            "node": "Sell Trade",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Buy Trade",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sell_trade": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "buy_trade": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
